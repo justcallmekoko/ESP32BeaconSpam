@@ -144,6 +144,7 @@ void broadcastSSID2() {
 
 // Function to send beacons with random ESSID length
 void broadcastSSID() {
+  int result;
   channel = random(1,12); 
   esp_wifi_set_channel(channel, WIFI_SECOND_CHAN_NONE);
   delay(1);  
@@ -159,6 +160,7 @@ void broadcastSSID() {
   
   /////////////////////////////
   int essid_len = random(6, 10);
+  //int essid_len = 6;
 
   // random prefix to beacon essid
   uint8_t rand_reg[essid_len] = {};
@@ -192,18 +194,18 @@ void broadcastSSID() {
     packet[38 + fullLen + i] = postSSID[i];
   
 
-  esp_wifi_80211_tx(WIFI_IF_AP, packet, sizeof(packet), false);
-  esp_wifi_80211_tx(WIFI_IF_AP, packet, sizeof(packet), false);
-  esp_wifi_80211_tx(WIFI_IF_AP, packet, sizeof(packet), false);
-  esp_wifi_80211_tx(WIFI_IF_AP, packet, sizeof(packet), false);
-  esp_wifi_80211_tx(WIFI_IF_AP, packet, sizeof(packet), false);
+  result = esp_wifi_80211_tx(WIFI_IF_AP, packet, sizeof(packet), false);
+  result = esp_wifi_80211_tx(WIFI_IF_AP, packet, sizeof(packet), false);
+  result = esp_wifi_80211_tx(WIFI_IF_AP, packet, sizeof(packet), false);
+  result = esp_wifi_80211_tx(WIFI_IF_AP, packet, sizeof(packet), false);
+  result = esp_wifi_80211_tx(WIFI_IF_AP, packet, sizeof(packet), false);
 }
 
 
 
 void loop() {
-  broadcastSSID(); // Random length SSID
-  //broadcastSSID2(); // With red team beacon
-  //broadcastSSID3(); // 6 character SSID
+  //broadcastSSID(); // Random length SSID (slowest)
+  //broadcastSSID2(); // With red team beacon (2nd fastest)
+  broadcastSSID3(); // 6 character SSID (fastest)
   delay(1);
 }
