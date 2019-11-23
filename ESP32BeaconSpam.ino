@@ -60,6 +60,48 @@ void setup() {
 }
 
 // Function to send beacons with fixed ESSID length
+void broadcastSSID3() {
+  channel = random(1,12); 
+  esp_wifi_set_channel(channel, WIFI_SECOND_CHAN_NONE);
+  delay(1);  
+
+  // Randomize SRC MAC
+  packet[10] = packet[16] = random(256);
+  packet[11] = packet[17] = random(256);
+  packet[12] = packet[18] = random(256);
+  packet[13] = packet[19] = random(256);
+  packet[14] = packet[20] = random(256);
+  packet[15] = packet[21] = random(256);
+
+  packet[37] = 6;
+  
+  
+  // Randomize SSID (Fixed size 6. Lazy right?)
+  packet[38] = alfa[random(65)];
+  packet[39] = alfa[random(65)];
+  packet[40] = alfa[random(65)];
+  packet[41] = alfa[random(65)];
+  packet[42] = alfa[random(65)];
+  packet[43] = alfa[random(65)];
+  
+  packet[56] = channel;
+
+  uint8_t postSSID[13] = {0x01, 0x08, 0x82, 0x84, 0x8b, 0x96, 0x24, 0x30, 0x48, 0x6c, //supported rate
+                      0x03, 0x01, 0x04 /*DSSS (Current Channel)*/ };
+
+
+
+  // Add everything that goes after the SSID
+  for(int i = 0; i < 12; i++) 
+    packet[38 + 6 + i] = postSSID[i];
+
+  esp_wifi_80211_tx(WIFI_IF_AP, packet, sizeof(packet), false);
+  esp_wifi_80211_tx(WIFI_IF_AP, packet, sizeof(packet), false);
+  esp_wifi_80211_tx(WIFI_IF_AP, packet, sizeof(packet), false);
+}
+
+
+// Function to send beacons with fixed ESSID length
 void broadcastSSID2() {
   channel = random(1,12); 
   esp_wifi_set_channel(channel, WIFI_SECOND_CHAN_NONE);
@@ -153,12 +195,15 @@ void broadcastSSID() {
   esp_wifi_80211_tx(WIFI_IF_AP, packet, sizeof(packet), false);
   esp_wifi_80211_tx(WIFI_IF_AP, packet, sizeof(packet), false);
   esp_wifi_80211_tx(WIFI_IF_AP, packet, sizeof(packet), false);
+  esp_wifi_80211_tx(WIFI_IF_AP, packet, sizeof(packet), false);
+  esp_wifi_80211_tx(WIFI_IF_AP, packet, sizeof(packet), false);
 }
 
 
 
 void loop() {
-  broadcastSSID();
-  //broadcastSSID2();
+  broadcastSSID(); // Random length SSID
+  //broadcastSSID2(); // With red team beacon
+  //broadcastSSID3(); // 6 character SSID
   delay(1);
 }
