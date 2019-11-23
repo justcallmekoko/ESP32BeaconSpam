@@ -50,7 +50,8 @@ void setup() {
   //esp_wifi_init(&cfg);
   //esp_wifi_set_storage(WIFI_STORAGE_RAM);
   esp_wifi_set_promiscuous(true);
-  esp_wifi_set_max_tx_power(78);
+  //esp_wifi_set_max_tx_power(78);
+  esp_wifi_set_max_tx_power(82);
   
   //Select external antenna
   //pinMode(15,OUTPUT);
